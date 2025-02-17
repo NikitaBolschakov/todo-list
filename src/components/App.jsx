@@ -4,22 +4,56 @@ import NewTaskForm from "./NewTaskForm";
 import { useState } from "react";
 
 function App() {
+  const [filter, setFilter] = useState("all"); // 'all', 'active', 'completed'
   const [tasks, setTasks] = useState([
     {
-      description: "REActive task",
+      description: "Drink coffee",
       status: "",
       createdAt: new Date(),
-      id: "3",
+      id: crypto.randomUUID(),
     },
-    { description: "Active task", status: "", createdAt: new Date(), id: "4" },
-    { description: "Active task", status: "", createdAt: new Date(), id: "5" },
     {
-      description: "reactive task",
+      description: "Order food",
       status: "",
       createdAt: new Date(),
-      id: "6",
+      id: crypto.randomUUID(),
+    },
+    {
+      description: "Pet the cat",
+      status: "",
+      createdAt: new Date(),
+      id: crypto.randomUUID(),
+    },
+    {
+      description: "Explore React",
+      status: "",
+      createdAt: new Date(),
+      id: crypto.randomUUID(),
     },
   ]);
+
+  // Для удаления выполненных задач
+  const handleClearCompleted = () => {
+    setTasks((prevTasks) =>
+      prevTasks.filter((task) => task.status !== "completed")
+    );
+  };
+
+  // Счетчик кол-ва выполненных задач для отключения кнопки "Clear completed"
+  const completedTaskCount = () =>
+    tasks.filter((task) => task.status === "completed").length;
+
+  // Функция для фильтрации задач
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "active") return task.status !== "completed"; // Вернуть активные
+    if (filter === "completed") return task.status === "completed"; // Вернуть выполненые
+    return true; // иначе оставить 'all'
+  });
+
+  // Подсчет активных задач
+  const activeTasksCount = tasks.filter(
+    (task) => task.status !== "completed"
+  ).length;
 
   // Обработчик удаления задачи
   function handleDelete(id) {
@@ -82,14 +116,20 @@ function App() {
       </header>
       <section className="main">
         <TaskList
-          tasks={tasks}
+          tasks={filteredTasks}
           setTasks={setTasks}
           onDelete={handleDelete}
           onToggleStatus={handleToggleStatus}
           onEdit={handleEdit}
           onSave={handleSave}
         />
-        <Footer />
+        <Footer
+          activeTasksCount={activeTasksCount}
+          onClearCompleted={handleClearCompleted}
+          completedTaskCount={completedTaskCount()}
+          currentFilter={filter}
+          onFilterChange={setFilter}
+        />
       </section>
     </section>
   );

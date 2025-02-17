@@ -363,6 +363,12 @@ html .clear-completed:active {
 	text-decoration: underline;
 }
 
+.clear-completed:disabled {
+  opacity: 0.5; 
+  cursor: not-allowed; 
+  text-decoration: none; 
+}
+
 .info {
 	margin: 65px auto 0;
 	color: #4d4d4d;
