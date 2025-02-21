@@ -1,8 +1,9 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import styles from './NewTaskForm.module.css';
 
 function NewTaskForm({ handleAddTask }) {
-  const [newTask, setNewTask] = useState("");
+  const [newTask, setNewTask] = useState('');
 
   const onLabelChange = (e) => {
     setNewTask(e.target.value);
@@ -12,14 +13,14 @@ function NewTaskForm({ handleAddTask }) {
     e.preventDefault();
     if (newTask.trim()) {
       handleAddTask(newTask.trim());
-      setNewTask("");
+      setNewTask('');
     }
   };
 
   return (
     <form action="" onSubmit={handleSubmit}>
       <input
-        className="new-todo"
+        className={styles.newTodo}
         placeholder="What needs to be done?"
         value={newTask}
         onChange={onLabelChange}

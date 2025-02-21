@@ -1,9 +1,10 @@
-import PropTypes from "prop-types";
-import Task from "./Task";
+import PropTypes from 'prop-types';
+import Task from '../Task/Task';
+import styles from './TaskList.module.css';
 
 function TaskList({ tasks, ...props }) {
   return (
-    <ul className="todo-list">
+    <ul className={styles.todoList}>
       {tasks.map((task) => (
         <Task key={task.id} {...task} {...props} />
       ))}
@@ -16,8 +17,8 @@ TaskList.propTypes = {
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       description: PropTypes.string.isRequired,
-      status: PropTypes.string,
-      createdAt: PropTypes.instanceOf(Date),
+      status: PropTypes.string.isRequired,
+      createdAt: PropTypes.instanceOf(Date).isRequired,
     })
   ).isRequired,
 };

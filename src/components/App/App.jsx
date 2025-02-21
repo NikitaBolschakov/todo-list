@@ -1,32 +1,33 @@
-import TaskList from "./TaskList";
-import Footer from "./Footer";
-import NewTaskForm from "./NewTaskForm";
-import { useState } from "react";
+import TaskList from './../TaskList/TaskList';
+import Footer from './../Footer/Footer';
+import NewTaskForm from './../NewTaskForm/NewTaskForm';
+import styles from './App.module.css';
+import { useState } from 'react';
 
 function App() {
-  const [filter, setFilter] = useState("all"); // 'all', 'active', 'completed'
+  const [filter, setFilter] = useState('all'); // 'all', 'active', 'completed'
   const [tasks, setTasks] = useState([
     {
-      description: "Drink coffee",
-      status: "",
+      description: 'Drink coffee',
+      status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
     },
     {
-      description: "Order food",
-      status: "",
+      description: 'Order food',
+      status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
     },
     {
-      description: "Pet the cat",
-      status: "",
+      description: 'Pet the cat',
+      status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
     },
     {
-      description: "Explore React",
-      status: "",
+      description: 'Explore React',
+      status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
     },
@@ -34,42 +35,37 @@ function App() {
 
   // Для удаления выполненных задач
   const handleClearCompleted = () => {
-    setTasks((prevTasks) =>
-      prevTasks.filter((task) => task.status !== "completed")
-    );
+    setTasks((prevTasks) => prevTasks.filter((task) => task.status !== 'completed'));
   };
 
   // Счетчик кол-ва выполненных задач для отключения кнопки "Clear completed"
-  const completedTaskCount = () =>
-    tasks.filter((task) => task.status === "completed").length;
+  const completedTaskCount = () => tasks.filter((task) => task.status === 'completed').length;
 
   // Функция для фильтрации задач
   const filteredTasks = tasks.filter((task) => {
-    if (filter === "active") return task.status !== "completed"; // Вернуть активные
-    if (filter === "completed") return task.status === "completed"; // Вернуть выполненые
+    if (filter === 'active') return task.status !== 'completed'; // Вернуть активные
+    if (filter === 'completed') return task.status === 'completed'; // Вернуть выполненые
     return true; // иначе оставить 'all'
   });
 
   // Подсчет активных задач
-  const activeTasksCount = tasks.filter(
-    (task) => task.status !== "completed"
-  ).length;
+  const activeTasksCount = tasks.filter((task) => task.status !== 'completed').length;
 
   // Обработчик удаления задачи
-  function handleDelete(id) {
+  const handleDelete = (id) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
-  }
+  };
 
   // Обработчик доб-я задачи
-  function handleAddTask(text) {
+  const handleAddTask = (text) => {
     const newTask = {
       description: text,
-      status: "",
+      status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
     };
     setTasks((prev) => [...prev, newTask]);
-  }
+  };
 
   // Обработчик переключения статуса задачи
   const handleToggleStatus = (id) => {
@@ -78,7 +74,7 @@ function App() {
         task.id === id
           ? {
               ...task,
-              status: task.status === "completed" ? "active" : "completed",
+              status: task.status === 'completed' ? 'active' : 'completed',
             }
           : task
       )
@@ -89,10 +85,7 @@ function App() {
   const handleEdit = (id) => {
     setTasks((prevTasks) =>
       prevTasks.map(
-        (task) =>
-          task.id === id
-            ? { ...task, status: "editing" }
-            : { ...task, status: "active" } // Сбрасываем редактирование у других задач
+        (task) => (task.id === id ? { ...task, status: 'editing' } : { ...task, status: 'active' }) // Сбрасываем редактирование у других задач
       )
     );
   };
@@ -100,21 +93,17 @@ function App() {
   // Обработчик сохранения изменений в отредактированной таске
   const handleSave = (id, newDescription) => {
     setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id
-          ? { ...task, description: newDescription, status: "active" }
-          : task
-      )
+      prevTasks.map((task) => (task.id === id ? { ...task, description: newDescription, status: 'active' } : task))
     );
   };
 
   return (
-    <section className="todoapp">
+    <section className={styles.todoapp}>
       <header className="header">
         <h1>todos</h1>
         <NewTaskForm handleAddTask={handleAddTask} />
       </header>
-      <section className="main">
+      <section className={styles.main}>
         <TaskList
           tasks={filteredTasks}
           setTasks={setTasks}

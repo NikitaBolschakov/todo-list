@@ -1,21 +1,18 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
+import styles from './TaskFilter.module.css';
 
 function TasksFilter({ currentFilter, onFilterChange }) {
-
   const filters = [
-    { name: "all", label: "All" },
-    { name: "active", label: "Active" },
-    { name: "completed", label: "Completed" },
+    { name: 'all', label: 'All' },
+    { name: 'active', label: 'Active' },
+    { name: 'completed', label: 'Completed' },
   ];
 
   return (
-    <ul className="filters">
+    <ul className={styles.filters}>
       {filters.map(({ name, label }) => (
         <li key={name}>
-          <button
-            className={currentFilter === name ? "selected" : ""}
-            onClick={() => onFilterChange(name)}
-          >
+          <button className={currentFilter === name ? styles.selected : ''} onClick={() => onFilterChange(name)}>
             {label}
           </button>
         </li>
