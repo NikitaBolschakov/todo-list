@@ -1,8 +1,20 @@
-# React + Vite
+# Todo List Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+https://todo-list-xi-beige-36.vercel.app
 
-Currently, two official plugins are available:
+Это простое приложение для управления задачами (Todo List), созданное с использованием **React**. Оно позволяет добавлять, редактировать, удалять и отмечать задачи как выполненные. В проекте также реализована фильтрация задач и отображение времени создания задачи.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Основные функции
+
+- **Добавление задач**: Пользователь может добавлять новые задачи.
+- **Редактирование задач**: Задачи можно редактировать.
+- **Удаление задач**: Задачи можно удалять.
+- **Отметка задач как выполненных**: Задачи можно отмечать как выполненные.
+- **Фильтрация задач**: Задачи можно фильтровать по статусу (все, активные, выполненные).
+- **Время создания задачи**: Для каждой задачи отображается время, прошедшее с момента её создания.
+
+## Технологии
+
+- **React**: Библиотека для создания пользовательских интерфейсов.
+- **CSS**: Для стилизации приложения.
+- **JavaScript**: Язык программирования, используемый в приложении.
