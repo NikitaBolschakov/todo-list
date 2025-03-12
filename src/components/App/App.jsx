@@ -2,7 +2,7 @@ import TaskList from './../TaskList/TaskList';
 import Footer from './../Footer/Footer';
 import NewTaskForm from './../NewTaskForm/NewTaskForm';
 import styles from './App.module.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
   const [filter, setFilter] = useState('all'); // 'all', 'active', 'completed'
@@ -12,26 +12,50 @@ function App() {
       status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
+      timer: null, // начальное значение таймера (например, 30 минут)
+      elapsedTime: 0, // текущее время выполнения
+      running: false, // флаг, показывающий запущен ли таймер
+      startTime: null, // время старта
     },
     {
       description: 'Order food',
       status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
+      timer: null,
+      elapsedTime: 0,
+      running: false,
+      startTime: null,
     },
     {
       description: 'Pet the cat',
       status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
+      timer: null,
+      elapsedTime: 0,
+      running: false,
+      startTime: null,
     },
     {
       description: 'Explore React',
       status: '',
       createdAt: new Date(),
       id: crypto.randomUUID(),
+      timer: null,
+      elapsedTime: 0,
+      running: false,
+      startTime: null,
     },
   ]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      updateElapsedTime();
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [tasks]);
 
   // Для удаления выполненных задач
   const handleClearCompleted = () => {
@@ -57,12 +81,16 @@ function App() {
   };
 
   // Обработчик доб-я задачи
-  const handleAddTask = (text) => {
+  const handleAddTask = (text, minutes, seconds) => {
     const newTask = {
       description: text,
-      status: '',
-      createdAt: new Date(),
+      status: '', // 'active', 'completed', 'editing'
+      createdAt: new Date(), // создана ...
       id: crypto.randomUUID(),
+      timer: Number(minutes) * 60 + Number(seconds), // преобразуем минуты и секунды в секунды
+      elapsedTime: 0, // текущее время выполнения
+      running: false, // флаг, показывающий запущен ли таймер
+      startTime: null, // время старта
     };
     setTasks((prev) => [...prev, newTask]);
   };
@@ -97,6 +125,97 @@ function App() {
     );
   };
 
+  //--------------timer---------------//
+
+  // Запуск таймера
+  const startTimer = (id) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === id) {
+          return {
+            ...task,
+            running: true,
+            startTime: Date.now(),
+          };
+        }
+        return task;
+      })
+    );
+  };
+
+  // Остановка таймера для конкретной задачи
+  const stopTimer = (id) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === id && task.running) {
+          const now = Date.now();
+          const newElapsedTime = task.elapsedTime + Math.floor((now - task.startTime) / 1000); // Добавляем прошедшее время
+          return {
+            ...task,
+            running: false,
+            elapsedTime: newElapsedTime,
+          };
+        }
+        return task;
+      })
+    );
+  };
+  // Обновляем текущее время выполнения задачи
+  const updateElapsedTime = () => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.running) {
+          const now = Date.now(); // Текущее время в миллисекундах
+
+          const passedTime = Math.floor((now - task.startTime) / 1000); // Вычисляем сколько секунд прошло с момента старта таймера
+          const remainingTime = task.timer - passedTime; // Рассчитываем оставшееся время до завершения таймера
+
+          if (task.status === 'completed') {
+            return {
+              ...task,
+              elapsedTime: 0,
+              timer: null,
+              running: false,
+            };
+          }
+          // Проверяем, задан ли таймер для данной задачи
+          if (task.timer) {
+            // Если оставшееся время меньше или равно нулю, таймер завершил свою работу
+            if (remainingTime <= 0) {
+              // Остановка таймера и сброс оставшегося времени
+              return {
+                ...task,
+                elapsedTime: 0, // Сбрасываем время выполнения
+                timer: null, // Удаляем значение таймера
+                running: false, // Останавливаем таймер
+              };
+            }
+
+            // Если таймер еще не завершен, обновляем оставшиеся секунды
+            if (remainingTime > 0) {
+              return {
+                ...task,
+                elapsedTime: remainingTime, // Обновляем оставшееся время
+                timer: remainingTime,
+                startTime: now, // Обновляем время старта для точности расчетов
+              };
+            }
+          }
+
+          // Если задача выполняется без установленного таймера, увеличиваем время выполнения
+          const newElapsedTime = task.elapsedTime + Math.floor((now - task.startTime) / 1000);
+
+          return {
+            ...task,
+            elapsedTime: newElapsedTime, // Обновляем время выполнения
+            startTime: now, // Обновляем время старта для точности расчетов
+          };
+        }
+        return task; // Если задача не активна, возвращаем её без изменений
+      })
+    );
+  };
+
   return (
     <section className={styles.todoapp}>
       <header className="header">
@@ -111,6 +230,8 @@ function App() {
           onToggleStatus={handleToggleStatus}
           onEdit={handleEdit}
           onSave={handleSave}
+          startTimer={startTimer}
+          stopTimer={stopTimer}
         />
         <Footer
           activeTasksCount={activeTasksCount}

@@ -162,3 +162,32 @@
     height: 40px;
   }
 }
+
+.todoList li .iconPause,
+.todoList li .iconPlay {
+  font-size: 18px;
+  padding-bottom: 6px;
+}
+
+.todoList li .iconPause {
+  right: 270px;
+}
+
+.todoList li .iconPlay {
+  right: 300px;
+}
+
+.iconPause:after {
+  content: '⏸';
+}
+
+.iconPlay:after {
+  content: '▶';
+}
+
+.timer {
+  font-size: 14px;
+  margin-left: auto;
+  padding-right: 10px;
+  color: gray;
+}
