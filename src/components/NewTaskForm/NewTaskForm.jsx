@@ -13,17 +13,30 @@ function NewTaskForm({ handleAddTask }) {
 
   const onMinutesChange = (event) => {
     const value = event.target.value;
-    // Проверка на число и ограничение до 59
-    if (/^\d*$/.test(value) && (value === '' || parseInt(value, 10) <= 59)) {
-      setMinutes(value); // Обновляем состояние только если введенное значение валидно
+    // Разрешаем только числа или пустую строку
+    if (value === '' || !isNaN(Number(value))) {
+      setMinutes(value);
     }
   };
 
   const onSecondsChange = (event) => {
     const value = event.target.value;
-    // Проверка на число и ограничение до 59
-    if (/^\d*$/.test(value) && (value === '' || parseInt(value, 10) <= 59)) {
-      setSeconds(value); // Обновляем состояние только если введенное значение валидно
+    // Разрешаем только валидные числа или пустую строку
+    if (value === '' || !isNaN(Number(value))) {
+      const secNum = parseInt(value, 10) || 0; // Преобразуем строку в целое число (десятичное) или 0
+
+      if (secNum >= 60) {
+        const currentMins = parseInt(minutes, 10); // Получаем текущее значение минут из state
+        const totalSeconds = currentMins * 60 + secNum; // общее количество сек
+        const newMins = Math.floor(totalSeconds / 60); // новое количество минут
+        const newSecs = totalSeconds % 60; // оставшиеся секунды
+
+        // Сразу изменяем состояние
+        setMinutes(String(newMins)); 
+        setSeconds(String(newSecs));
+      } else {
+        setSeconds(value);
+      }
     }
   };
 
