@@ -26,7 +26,7 @@ function NewTaskForm({ handleAddTask }) {
       const secNum = parseInt(value, 10) || 0; // Преобразуем строку в целое число (десятичное) или 0
 
       if (secNum >= 60) {
-        const currentMins = parseInt(minutes, 10); // Получаем текущее значение минут из state
+        const currentMins = parseInt(minutes, 10) || 0; // Получаем текущее значение минут из state
         const totalSeconds = currentMins * 60 + secNum; // общее количество сек
         const newMins = Math.floor(totalSeconds / 60); // новое количество минут
         const newSecs = totalSeconds % 60; // оставшиеся секунды
