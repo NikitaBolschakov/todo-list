@@ -3,7 +3,21 @@ import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import styles from './../TaskList/TaskList.module.css';
 
-function Task({ description, id, status, onDelete, onToggleStatus, onEdit, onSave, createdAt }) {
+function Task({
+  description,
+  id,
+  status,
+  onDelete,
+  onToggleStatus,
+  onEdit,
+  onSave,
+  createdAt,
+  timer,
+  elapsedTime,
+  running,
+  startTimer,
+  stopTimer,
+}) {
   const [editedText, setEditedText] = useState(description);
 
   const handleSave = (e) => {
@@ -23,6 +37,22 @@ function Task({ description, id, status, onDelete, onToggleStatus, onEdit, onSav
 
   const timeAgo = formatDistanceToNow(createdAt, { addSuffix: true });
 
+  const handleStartTimer = () => {
+    if (!running) {
+      startTimer(id);
+    }
+  };
+
+  const handleStopTimer = () => stopTimer(id);
+
+  const handleViewTime = () => {
+    const time = timer || elapsedTime; // Используем timer, если он есть, иначе elapsedTime
+    const minutes = Math.floor(time / 60); // Получаем полное количество минут
+    const seconds = time % 60; // Получаем оставшиеся секунды
+
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`; // Форматируем вывод
+  };
+
   return (
     <li className={handleClassesTask(status)}>
       <div className={styles.view}>
@@ -34,6 +64,15 @@ function Task({ description, id, status, onDelete, onToggleStatus, onEdit, onSav
         />
         <label>
           <span className={styles.description}>{description}</span>
+
+          {running ? (
+            <button className={`${styles.icon} ${styles.iconPause}`} onClick={handleStopTimer}></button>
+          ) : (
+            <button className={`${styles.icon} ${styles.iconPlay}`} onClick={handleStartTimer}></button>
+          )}
+
+          <span className={styles.timer}>{handleViewTime()}</span>
+
           <span className={styles.created}>{timeAgo}</span>
         </label>
         <button className={`${styles.icon} ${styles.iconEdit}`} onClick={() => onEdit(id)}></button>
@@ -63,6 +102,11 @@ Task.propTypes = {
   onToggleStatus: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  timer: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  elapsedTime: PropTypes.number, // Время выполнения
+  running: PropTypes.bool,
+  startTimer: PropTypes.func.isRequired,
+  stopTimer: PropTypes.func.isRequired,
 };
 
 export default Task;
